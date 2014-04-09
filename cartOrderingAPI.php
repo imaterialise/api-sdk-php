@@ -79,13 +79,13 @@ class IMatOrderApiClient
 
 $requestData = '
 {
-	"cartID":"46030c8b-7eb7-49a9-a78e-bf01c7421441", 
+	"cartID":"[cart id here]", 
 	"myOrderReference":"some reference",
 	"directMailingAllowed":"false",
 	"shipmentService":"Standard"
 }';
 
-$client = new IMatOrderApiClient("https://imatsandbox.materialise.net/web-api/order/post","4f58e2cb-202f-41a9-ab9d-8ca4d3e674fd");
+$client = new IMatOrderApiClient("https://imatsandbox.materialise.net/web-api/order/post","[API Code here]");
 
 $result = $client->Post($requestData, "application/json");
 
