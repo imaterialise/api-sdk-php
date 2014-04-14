@@ -2,13 +2,11 @@
 
 class IMatCartItemApiClient
 {
-	private $_apiCode;
 	private $_apiUrl;
 	
-	public function __construct($apiUrl, $apiCode)
+	public function __construct($apiUrl)
 	{
 		$this->_apiUrl = $apiUrl;
-		$this->_apiCode = $apiCode;
 	}
 	
 	public function Post($request, $requestContentType, $modelFilePath)
@@ -32,7 +30,6 @@ class IMatCartItemApiClient
 		$headers = array (
 			"Content-Type: multipart/form-data; boundary=".$delimiter,
 			"Accept: ".$acceptContentType,
-			"ApiCode: ".$this->_apiCode,
 			"Content-Length: ".strlen($body)
 		);
 		return $headers;
@@ -96,10 +93,10 @@ $requestData = '
 {
    cartItems:[
       {
-         "toolID":"[Tool Id here]", 
+         "toolID":"[Tool id here]", 
          "MyCartItemReference":"some reference",
          "modelID":"",
-         "modelFileName":"_porsche.stl",
+         "modelFileName":"[File name here, example: test.stl]",
          "fileUnits":"mm",
          "fileScaleFactor":"1",
          "materialID":"035f4772-da8a-400b-8be4-2dd344b28ddb",
@@ -118,9 +115,9 @@ $requestData = '
 }';
 
 
-$filePath = "<<path to model file>>";
+$filePath = "[File path here]";
 
-$client = new IMatCartItemApiClient("https://i.materialise.com/web-api/cartitems/register","[API Code here]");
+$client = new IMatCartItemApiClient(""https://imatsandbox.materialise.net/web-api/cartitems/register");
 
 $result = $client->Post($requestData, "text/json", $filePath);
 
