@@ -9,12 +9,12 @@ class IMatUploadModelApiClient
 		$this->_apiUrl = $apiUrl;
 	}
 	
-	public function Post($filePath, $fileUnits, $fileUrl)
+	public function Post($filePath, $fileUnits, $fileUrl, $acceptContentType)
 	{
 		$bodyPartsDelimiter = $this->CreateDelimiter();
 		
 		$body = $this->CreatePostBody($filePath, $fileUnits, $fileUrl, $bodyPartsDelimiter);
-		$headers = $this->CreateHeaders($body, $requestContentType, $bodyPartsDelimiter);
+		$headers = $this->CreateHeaders($body, $acceptContentType, $bodyPartsDelimiter);
 		$result = $this->DoPost($this->_apiUrl, $headers, $body);
 		
 		return $result;
@@ -113,7 +113,7 @@ $fileUrl = "";
 
 $client = new IMatUploadModelApiClient("https://imatsandbox.materialise.net/web-api/tool/[ToolID here]/model");
 
-$result = $client->Post($filePath, $fileUnits, $fileUrl);
+$result = $client->Post($filePath, $fileUnits, $fileUrl, "application/json");
 
 echo(htmlspecialchars($result));
 ?>
