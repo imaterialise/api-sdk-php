@@ -79,7 +79,7 @@ class IMat3DPrintLabApiClient
 		
 		$fileName = $fileInfo["basename"];
 		
-		$data= "Content-Disposition: form-data; name=\"file\"; filename=\"$fileName\"\r\n";
+		$data= "Content-Disposition: form-data; name=\"file\"; filename=\"".$fileName."\"\r\n";
 		$data.= "Content-Type: application/octet-stream\r\n\r\n";
 		$data.= $fileData;
 	
