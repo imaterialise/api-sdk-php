@@ -117,7 +117,7 @@ $requestData = '
 
 $filePath = "[File path here]";
 
-$client = new IMatCartItemApiClient(""https://imatsandbox.materialise.net/web-api/cartitems/register");
+$client = new IMatCartItemApiClient("https://imatsandbox.materialise.net/web-api/cartitems/register");
 
 $result = $client->Post($requestData, "text/json", $filePath);
 
