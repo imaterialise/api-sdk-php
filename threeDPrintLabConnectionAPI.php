@@ -9,11 +9,11 @@ class IMat3DPrintLabApiClient
 		$this->_apiUrl = $apiUrl;
 	}
 	
-	public function Post($toolID, $useAjax, $forceEmbedding, $filePath, $fileUrl, $scale, $materialID, $finishID, $memberID, $reference)
+	public function Post($toolID, $forceEmbedding, $filePath, $fileUrl, $scale, $materialID, $finishID, $memberID, $reference, $chkHideButtonsPanel, $currency)
 	{
 		$bodyPartsDelimiter = $this->CreateDelimiter();
 		
-		$body = $this->CreatePostBody($toolID, $useAjax, $forceEmbedding, $filePath, $fileUrl, $scale, $materialID, $finishID, $memberID, $reference, $bodyPartsDelimiter);
+		$body = $this->CreatePostBody($toolID, $forceEmbedding, $filePath, $fileUrl, $scale, $materialID, $finishID, $memberID, $reference, $chkHideButtonsPanel, $currency, $bodyPartsDelimiter);
 		$headers = $this->CreateHeaders($body, $bodyPartsDelimiter);
 		$result = $this->DoPost($this->_apiUrl, $headers, $body);
 		
@@ -30,10 +30,9 @@ class IMat3DPrintLabApiClient
 		return $headers;
 	}
 		
-	private function CreatePostBody($toolID, $useAjax, $forceEmbedding, $filePath, $fileUrl, $scale, $materialID, $finishID, $memberID, $reference, $delimiter)
+	private function CreatePostBody($toolID, $forceEmbedding, $filePath, $fileUrl, $scale, $materialID, $finishID, $memberID, $reference, $chkHideButtonsPanel, $currency, $delimiter)
 	{
 		$tooIDPart = $this->CreateParameterPart("plugin", $toolID);
-		$useAjaxPart = $this->CreateParameterPart("useAjax", $useAjax);
 		$forceEmbeddingPart = $this->CreateParameterPart("forceEmbedding", $forceEmbedding);
 		$fileUrlPart = $this->CreateParameterPart("fileUrl", $fileUrl);
 		$scalePart = $this->CreateParameterPart("scale", $scale);
@@ -41,10 +40,12 @@ class IMat3DPrintLabApiClient
 		$finishIDPart = $this->CreateParameterPart("finishID", $finishID);
 		$memberIDPart = $this->CreateParameterPart("memberID", $memberID);
 		$referencePart = $this->CreateParameterPart("reference", $reference);
+		$currencyPart = $this->CreateParameterPart("currency", $currency);
+		$chkHideButtonsPanelPart = $this->CreateParameterPart("chkHideButtonsPanel", $chkHideButtonsPanel);
 
 		$filePath = $this->CreateFilePart($filePath);
 		
-		$all = array($tooIDPart, $useAjaxPart, $forceEmbeddingPart, $fileUrlPart, $filePath, $scalePart, $materialIDPart, $finishIDPart, $memberIDPart, $referencePart);
+		$all = array($tooIDPart, $forceEmbeddingPart, $fileUrlPart, $filePath, $scalePart, $materialIDPart, $finishIDPart, $memberIDPart, $referencePart, $currencyPart, $chkHideButtonsPanelPart);
 		$body = $this->CombineParts($all, $delimiter);
 		
 		return $body;
@@ -141,7 +142,6 @@ class IMat3DPrintLabApiClient
 }
 
 $toolID = "[tool ID here]";
-$useAjax = "false";
 $forceEmbedding = "false";
 //use filePath or fileUrl, but not both at the same time
 $filePath = "[File path here]";
@@ -151,11 +151,13 @@ $materialID = "";
 $finishID = "";
 $memberID = "";
 $reference = "";
+$chkHideButtonsPanel=""; //set "true" or "false"
+$currency="";
 
 
 $client = new IMat3DPrintLabApiClient("https://imatsandbox.materialise.net/Upload");
 
-$result = $client->Post($toolID, $useAjax, $forceEmbedding, $filePath, $fileUrl, $scale, $materialID, $finishID, $memberID, $reference);
+$result = $client->Post($toolID, $forceEmbedding, $filePath, $fileUrl, $scale, $materialID, $finishID, $memberID, $reference, $chkHideButtonsPanel, $currency);
 
 echo($result);
 ?>
