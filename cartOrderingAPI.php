@@ -11,11 +11,13 @@ class IMatOrderApiClient
 		$this->_apiCode = $apiCode;
 	}
 	
-	public function Post($request, $requestContentType)
+	public function Post($request, $deliveryNoteFilePath, $invoiceFilePath, $requestContentType)
 	{
+
 		$bodyPartsDelimiter = $this->CreateDalimiter();
-		$body = $this->CreatePostBody($request, $requestContentType, $bodyPartsDelimiter);
+		$body = $this->CreatePostBody($request, $deliveryNoteFilePath, $invoiceFilePath, $requestContentType, $bodyPartsDelimiter);
 		$headers = $this->CreateHeaders($body, $requestContentType, $bodyPartsDelimiter);
+			
 		$result = $this->DoPost($this->_apiUrl, $headers, $body);
 		
 		return $result;
@@ -55,10 +57,14 @@ class IMatOrderApiClient
 		return $result;
 	}
 	
-	private function CreatePostBody($request, $requestContentType, $delimiter)
+	private function CreatePostBody($request, $deliveryNoteFilePath, $invoiceFilePath, $requestContentType, $delimiter)
 	{
 		$requestPart = $this->CreateRequestPart($request, $requestContentType);
-		$body = $this->CombineParts(array($requestPart), $delimiter);
+		$deliveryNoteFilePart = $this->CreateFilePart("MyDeliveryNoteFile", $deliveryNoteFilePath);
+		$invoiceFilePart = $this->CreateFilePart("MyInvoiceFile", $invoiceFilePath);
+		
+		$body = $this->CombineParts(array($requestPart, $deliveryNoteFilePart, $invoiceFilePart), $delimiter);
+		
 		return $body;
 	}
 		
@@ -75,6 +81,21 @@ class IMatOrderApiClient
 		$result = "--$delimiter\r\n".implode("\r\n--$delimiter\r\n", $parts)."\r\n--$delimiter--\r\n";
 		return $result;
 	}
+	
+	private function CreateFilePart($name, $filePath)
+	{
+	
+		$fileData = file_get_contents($filePath);
+		
+		$fileInfo = pathinfo($filePath);
+		
+		$fileName = $fileInfo["basename"];
+
+		$data= "Content-Disposition: form-data; name=\"".$name."\"; filename=\"".$fileName."\"\r\n";
+		$data.= "Content-Type: application/octet-stream\r\n\r\n";
+		$data.= $fileData;
+		return $data;
+	}	
 }
 
 $requestData = '
@@ -82,12 +103,18 @@ $requestData = '
 	"cartID":"[cart id here]", 
 	"myOrderReference":"some reference",
 	"directMailingAllowed":"false",
-	"shipmentService":"Standard"
+	"shipmentService":"",
+	"myInvoiceLink":"",
+    "myDeliveryNoteLink":"",
+	"remarks":""
 }';
+
+$deliveryNoteFilePath = "[File Path here]";//file path or empty string
+$invoiceFilePath = "[File Path here]";//file path or empty string
 
 $client = new IMatOrderApiClient("https://imatsandbox.materialise.net/web-api/order/post","[API Code here]");
 
-$result = $client->Post($requestData, "application/json");
+$result = $client->Post($requestData, $deliveryNoteFilePath, $invoiceFilePath, "application/json");
 
 echo(htmlspecialchars($result));
 ?>
